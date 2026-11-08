@@ -36,6 +36,12 @@ These measures are intentionally separate. A single blended score could conceal 
 
 **Next question:** Which indicators, independently or together, best predict sustained contribution over subsequent renewal cycles?
 
+## Run it on your own data
+
+Switch the sidebar from *Simulated cohort* to *My own CSV* and upload a customer-level export: one row per customer who was eligible to renew. Two columns are required, `renewed` (yes/no) and `discount_pct` (0 to 100). Every other column is optional and unlocks a view when present: `acquisition_source`, `engagement` (any labels; you choose which count as engaged), `survey_aware_of_renewal`, `cancellation_attempt`, `cancellation_friction_observed`, `monthly_revenue`, `monthly_contribution`. A template CSV is downloadable from the sidebar. Indicators the file does not contain show as *not measured* rather than as zero, and every assumption the app makes about your file (a missing column, a fraction converted to percent) is listed above the results.
+
+Run the app locally and the file never leaves your machine. On a hosted instance it is processed in memory for the session and not stored. The measures are descriptive summaries of the cohort you uploaded; the sensitivity screen still depends on an assumed renewal response, as it does for simulated data.
+
 ## Run locally
 
 Requires Python 3.10+.
@@ -55,7 +61,7 @@ pytest -q
 
 ## What this is and is not
 
-This is a synthetic-data decision demonstration, not a validated predictor, a causal estimate, or a finding about any real company. Every record is generated locally by `model.make_customers()` from a fixed random seed; the repository contains no customer exports, and prices, discounts, channel mixes and renewal probabilities are invented illustrative parameters. Customer inattention cannot be inferred from non-use, and changes in renewal outcomes require appropriate measurement. All proposed tests preserve required disclosure and cancellation protections.
+In its default mode this is a synthetic-data decision demonstration, not a validated predictor, a causal estimate, or a finding about any real company. With your own data uploaded it is a descriptive view of that cohort, still not a causal estimate. Every record is generated locally by `model.make_customers()` from a fixed random seed; the repository contains no customer exports, and prices, discounts, channel mixes and renewal probabilities are invented illustrative parameters. Customer inattention cannot be inferred from non-use, and changes in renewal outcomes require appropriate measurement. All proposed tests preserve required disclosure and cancellation protections.
 
 ## Next research steps
 
@@ -78,6 +84,7 @@ Copyright © 2026 Uta Knablein. All rights reserved. See [COPYRIGHT.md](COPYRIGH
 - `app.py`: interactive Streamlit dashboard
 - `model.py`: reproducible customer simulation and calculations
 - `tests/test_model.py`: model tests
+- `tests/test_upload.py`: tests for running the analysis on uploaded data
 - `requirements.txt`: dependencies
 - `RESEARCH_CONTEXT.md`: literature and methodological context
 - `COPYRIGHT.md`: rights notice
