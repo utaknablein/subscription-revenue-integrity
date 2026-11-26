@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Subscription Revenue Integrity</title>
+<meta name="description" content="Are we building customer loyalty or merely recording renewals? An interactive prototype on synthetic data by Uta Knablein.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/browser@1.12.3/build/stlite.css">
+<style>
+  html, body { margin: 0; height: 100%; }
+  #loading { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; max-width: 34rem; margin: 18vh auto 0; padding: 0 1.5rem; color: #262730; line-height: 1.5; }
+  #loading h1 { font-size: 1.6rem; margin: 0 0 .5rem; }
+  #loading p { margin: 0 0 .75rem; color: #555; }
+</style>
+</head>
+<body>
+<div id="root">
+  <div id="loading">
+    <h1>Subscription Revenue Integrity</h1>
+    <p>Loading the prototype. The first visit takes about half a minute, because the whole app runs inside your browser.</p>
+    <p>Nothing you enter or upload leaves your device.</p>
+    <noscript>This prototype needs JavaScript to run.</noscript>
+  </div>
+</div>
+<script type="module">
+  import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@1.12.3/build/stlite.js";
+  mount(
+    {
+      requirements: ["pandas", "numpy", "jinja2"],
+      entrypoint: "app.py",
+      files: {
+        "app.py": { url: "./app.py" },
+        "model.py": { url: "./model.py" },
+      },
+    },
+    document.getElementById("root"),
+  );
+</script>
+</body>
+</html>
