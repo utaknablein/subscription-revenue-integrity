@@ -2,39 +2,351 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Subscription Revenue Integrity</title>
-<meta name="description" content="Are we building customer loyalty or merely recording renewals? An interactive prototype on synthetic data by Uta Knablein.">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/browser@1.12.3/build/stlite.css">
+<meta name="description" content="Are we building customer loyalty or merely recording renewals? An interactive prototype on simulated data by Uta Knablein.">
+<meta property="og:title" content="Subscription Revenue Integrity">
+<meta property="og:description" content="82 of 100 customers renewed. Only 33 paid full price. An interactive prototype on simulated data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  html, body { margin: 0; height: 100%; }
-  #loading { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; max-width: 34rem; margin: 18vh auto 0; padding: 0 1.5rem; color: #262730; line-height: 1.5; }
-  #loading h1 { font-size: 1.6rem; margin: 0 0 .5rem; }
-  #loading p { margin: 0 0 .75rem; color: #555; }
+:root{
+  color-scheme: dark;
+  --bg:#0B1A38; --panel:#13264C; --ink:#F4F0E6; --muted:#A8B4CE; --rule:#2B3D68;
+  --gold:#C4961F; --full:#C4961F; --disc:#4A8AE6; --bar:#C9D3EA;
+  --display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:1.125rem;line-height:1.55;font-variant-numeric:tabular-nums}
+a{color:inherit;text-underline-offset:.18em}
+a:hover{color:#E3B94A}
+:focus-visible{outline:3px solid var(--full);outline-offset:3px;border-radius:4px}
+.wrap{max-width:68rem;margin:0 auto;padding:0 1.5rem}
+header.top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:1.5rem 0 0;font-size:1rem}
+header.top .name{font-family:var(--display);font-weight:600}
+header.top nav a{margin-left:1.25rem}
+
+.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:3.5rem;align-items:center;padding:4.5rem 0 4rem}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(2.5rem,6.2vw,4.75rem);line-height:1.02;letter-spacing:-.025em;margin:0 0 1.5rem;text-wrap:balance}
+.lede{font-size:1.3rem;line-height:1.45;max-width:32rem;margin:0 0 2rem}
+.seg{display:inline-flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .9rem;padding:0;border:0}
+.seg legend{padding:0;margin-bottom:.5rem;color:var(--muted);font-size:1rem}
+.seg button{font:inherit;font-size:1rem;color:var(--ink);background:transparent;border:1.5px solid var(--rule);border-radius:999px;padding:.35rem .95rem;cursor:pointer}
+.seg button:hover{border-color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#0B1A38;font-weight:600}
+.note{color:var(--muted);font-size:.95rem;max-width:32rem;margin:0}
+
+.waffle{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;max-width:25rem}
+.waffle i{display:block;aspect-ratio:1;border-radius:3px;background:transparent;box-shadow:inset 0 0 0 1.5px #3A4E7E;transition:background-color .35s ease,box-shadow .35s ease}
+.waffle i.full{background:var(--full);box-shadow:none}
+.waffle i.disc{background:var(--disc);box-shadow:none}
+.key{list-style:none;margin:1.4rem 0 0;padding:0;max-width:25rem}
+.key li{display:grid;grid-template-columns:1.1rem 2.6rem 1fr;align-items:center;gap:.6rem;padding:.3rem 0}
+.key .sw{width:1.1rem;height:1.1rem;border-radius:3px}
+.key .sw.full{background:var(--full)} .key .sw.disc{background:var(--disc)} .key .sw.left{box-shadow:inset 0 0 0 1.5px #6F80A6}
+.key b{font-family:var(--display);font-size:1.5rem;font-weight:700;text-align:right;line-height:1}
+
+section.block{border-top:1.5px solid var(--gold);padding:3.25rem 0 3.75rem}
+h2{font-family:var(--display);font-weight:650;font-size:clamp(1.6rem,3vw,2.15rem);line-height:1.12;letter-spacing:-.015em;margin:0 0 .75rem;max-width:38rem;text-wrap:balance}
+.take{font-size:1.25rem;max-width:40rem;margin:0 0 2rem}
+.sub{color:var(--muted);font-size:1rem;margin:0 0 .6rem}
+
+.cohort{display:grid;grid-template-columns:11rem minmax(0,1fr) minmax(0,1fr);column-gap:2rem;row-gap:.9rem;align-items:center}
+.cohort .hd{color:var(--muted);font-size:1rem;align-self:end;padding-bottom:.2rem}
+.cohort .lab{font-weight:600}
+.track{position:relative;height:1.75rem;display:flex;align-items:center;gap:2px}
+.track .seg-bar{height:100%;min-width:2px}
+.track .seg-bar.full{background:var(--full);border-radius:0}
+.track .seg-bar.disc{background:var(--disc);border-radius:0 4px 4px 0}
+.track .seg-bar.money{background:var(--bar);border-radius:0 4px 4px 0}
+.track .val{margin-left:.55rem;font-weight:600;white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;font-size:1rem;color:var(--muted);margin:1.5rem 0 0}
+.legend span{display:inline-flex;align-items:center;gap:.45rem}
+.legend i{width:.85rem;height:.85rem;border-radius:2px;display:inline-block}
+details{margin-top:1.25rem;font-size:1rem}
+summary{cursor:pointer;color:var(--muted);width:fit-content}
+table{border-collapse:collapse;margin-top:.75rem;font-size:1rem}
+th,td{text-align:right;padding:.35rem .9rem;border-bottom:1px solid var(--rule)}
+th:first-child,td:first-child{text-align:left;padding-left:0}
+th{font-weight:600}
+
+.sens{display:grid;grid-template-columns:minmax(0,19rem) minmax(0,1fr);gap:3rem;align-items:start}
+.ctl{margin-bottom:1.6rem}
+.ctl label{display:block;margin-bottom:.35rem}
+.ctl output{font-family:var(--display);font-weight:700;font-size:1.5rem;display:block;line-height:1.1;margin-bottom:.4rem}
+input[type=range]{width:100%;accent-color:var(--full);height:1.5rem}
+.result{background:var(--panel);border-radius:10px;padding:1.1rem 1.25rem;font-size:1.1rem}
+.result strong{font-family:var(--display);font-size:1.9rem;font-weight:700;display:block;line-height:1.1;margin-bottom:.3rem}
+.chartbox{position:relative}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{font-family:var(--body);font-size:14px;fill:var(--muted)}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:#0B1A38;font-size:.95rem;line-height:1.35;padding:.45rem .65rem;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .12s;z-index:5}
+.tip.on{opacity:1}
+
+.dims{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2.5rem}
+.dims h3{font-family:var(--display);font-size:1.25rem;font-weight:650;margin:0 0 .35rem}
+.dims p{margin:0 0 .9rem;font-size:1.05rem}
+.dims .fig{font-family:var(--display);font-weight:700;font-size:2.4rem;line-height:1;display:block}
+.dims .cap{color:var(--muted);font-size:1rem}
+
+ol.value{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1.5rem}
+ol.value li{border-top:4px solid var(--gold);padding-top:.8rem;font-size:1rem}
+ol.value .ltr{color:#E3B94A;font-family:var(--display);font-weight:700;font-size:2.6rem;line-height:1;display:block;margin-bottom:.35rem}
+ol.value b{display:block;font-size:1.08rem;margin-bottom:.3rem}
+
+.close{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:3rem}
+.close p{margin:0 0 1rem;max-width:30rem}
+.btn{display:inline-block;background:var(--gold);color:#0B1A38;text-decoration:none;border-radius:999px;padding:.6rem 1.3rem;font-weight:600}
+.btn:hover{background:var(--ink);color:#0B1A38}
+footer{border-top:1px solid var(--rule);padding:1.5rem 0 3rem;color:var(--muted);font-size:.95rem}
+
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr;gap:2.5rem;padding:3rem 0}
+  .sens,.close{grid-template-columns:1fr;gap:2rem}
+  .dims{grid-template-columns:1fr;gap:2rem}
+  ol.value{grid-template-columns:1fr 1fr}
+  .cohort{grid-template-columns:1fr;row-gap:.35rem}
+  .cohort .hd{display:none}
+  .cohort .lab{margin-top:1rem}
+  .cohort .track::before{content:attr(data-h);position:absolute;top:-1.35rem;left:0;font-size:.9rem;color:var(--muted)}
+  .cohort .track{margin-top:1.4rem}
+  header.top nav a:first-child{display:none}
+}
+@media (prefers-reduced-motion:reduce){.waffle i,.tip{transition:none}}
 </style>
 </head>
 <body>
-<div id="root">
-  <div id="loading">
-    <h1>Subscription Revenue Integrity</h1>
-    <p>Loading the prototype. The first visit takes about half a minute, because the whole app runs inside your browser.</p>
-    <p>Nothing you enter or upload leaves your device.</p>
-    <noscript>This prototype needs JavaScript to run.</noscript>
+<div class="wrap">
+<header class="top">
+  <span class="name">Subscription Revenue Integrity</span>
+  <nav><a href="tool.html">Run it on your own data</a><a href="https://www.utaknablein.com">Uta Knablein</a></nav>
+</header>
+
+<main>
+<div class="hero">
+  <div>
+    <h1 id="headline">82 of 100 customers renewed. Only 33 paid full price.</h1>
+    <p class="lede">A renewal rate tells you who stayed. It does not tell you what staying was worth. Are we building customer loyalty or merely recording renewals?</p>
+    <fieldset class="seg" id="chan"><legend>See it by how the customer was acquired</legend></fieldset>
+    <p class="note">Simulated data for 12,000 subscribers. The figures illustrate the method and describe no real business.</p>
+  </div>
+  <div>
+    <div class="waffle" id="waffle" role="img" aria-label="100 squares, one per customer out of 100"></div>
+    <ul class="key">
+      <li><span class="sw full"></span><b id="k-full">33</b><span>renewed at full price</span></li>
+      <li><span class="sw disc"></span><b id="k-disc">49</b><span>renewed on a discount</span></li>
+      <li><span class="sw left"></span><b id="k-left">18</b><span>did not renew</span></li>
+    </ul>
   </div>
 </div>
-<script type="module">
-  import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@1.12.3/build/stlite.js";
-  mount(
-    {
-      requirements: ["pandas", "numpy", "jinja2"],
-      entrypoint: "app.py",
-      files: {
-        "app.py": { url: "./app.py" },
-        "model.py": { url: "./model.py" },
-      },
-    },
-    document.getElementById("root"),
-  );
+
+<section class="block">
+  <h2>The customers who renew most are worth the least</h2>
+  <p class="take" id="cohort-take"></p>
+  <div class="chartbox">
+    <div class="cohort" id="cohort"></div>
+    <div class="tip" id="tip"></div>
+  </div>
+  <p class="legend"><span><i style="background:var(--full)"></i>Renewed at full price</span><span><i style="background:var(--disc)"></i>Renewed on a discount</span></p>
+  <details><summary>Show the numbers as a table</summary><div id="cohort-table"></div></details>
+</section>
+
+<section class="block">
+  <h2>What happens if we discount less?</h2>
+  <p class="take">Smaller discounts earn more per renewal and lose some renewals. Set both and see where the trade stops paying.</p>
+  <div class="sens">
+    <div>
+      <div class="ctl"><label for="red">Cut every discount by</label><output id="red-o">20%</output><input type="range" id="red" min="0" max="100" step="5" value="20"></div>
+      <div class="ctl"><label for="loss">Assume renewals among discounted customers fall by</label><output id="loss-o">2 points per 10% cut</output><input type="range" id="loss" min="0" max="15" step="0.5" value="2"></div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </div>
+    <div class="chartbox" id="sens-box">
+      <p class="sub">Monthly contribution from these 12,000 customers, by size of discount cut</p>
+      <svg id="sens-svg" viewBox="0 0 640 340" role="img" aria-label="Line chart of monthly contribution against the size of the discount cut"></svg>
+      <div class="tip" id="tip2"></div>
+    </div>
+  </div>
+  <p class="note" style="margin-top:1.5rem;max-width:44rem">This is a what-if on an assumed customer response, and no forecast. The honest next step is a controlled experiment that protects customers.</p>
+</section>
+
+<section class="block">
+  <h2>Three questions a renewal rate cannot answer</h2>
+  <p class="take">Each is measured on its own. Blending them into one score would hide exactly the differences that matter.</p>
+  <div class="dims">
+    <div><h3>Customer value</h3><p>Are we earning the relationship through value delivered?</p><span class="fig" id="d-val"></span><span class="cap">of customers actively use the product</span></div>
+    <div><h3>Economic quality</h3><p>Are these renewals financially sustainable?</p><span class="fig" id="d-eco"></span><span class="cap">of renewers pay full price</span></div>
+    <div><h3>Choice integrity</h3><p>Can customers make an informed choice?</p><span class="fig" id="d-cho"></span><span class="cap">say they knew the renewal was coming</span></div>
+  </div>
+</section>
+
+<section class="block">
+  <h2>From the number to a decision</h2>
+  <p class="take">VALUE is the five-step method I use to turn a suspicious renewal rate into a tested change.</p>
+  <ol class="value">
+    <li><span class="ltr">V</span><b>Verify the customer problem</b>Talk to subscribers and finance. Look at billing awareness, engagement and complaints.</li>
+    <li><span class="ltr">A</span><b>Assess the economics</b>Separate headline renewal from full-price renewal, discounts and net contribution.</li>
+    <li><span class="ltr">L</span><b>Launch a fair experiment</b>Test transparent renewal experiences and incentives with random assignment.</li>
+    <li><span class="ltr">U</span><b>Understand the evidence</b>Set profit and trust guardrails in advance. Read the result with its uncertainty.</li>
+    <li><span class="ltr">E</span><b>Expand or exit</b>Scale what the evidence supports. Stop when trust, compliance or economics slip.</li>
+  </ol>
+</section>
+
+<section class="block">
+  <div class="close">
+    <div>
+      <h2>Try it on your own customers</h2>
+      <p>The full tool takes a customer export with two required columns and runs every view on your data. It works inside your browser, so the file stays on your device.</p>
+      <p><a class="btn" href="tool.html">Open the full tool</a></p>
+      <p class="note">It needs about half a minute to load.</p>
+    </div>
+    <div>
+      <h2>Who built this</h2>
+      <p>I am Uta Knablein. I built this prototype to make one argument visible: revenue dashboards can make very different customer relationships look equally healthy.</p>
+      <p><a href="https://www.utaknablein.com">utaknablein.com</a><br><a href="https://github.com/utaknablein/subscription-revenue-integrity">Code and method on GitHub</a></p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>© 2026 Uta Knablein. All rights reserved. A research prototype on simulated data. It is not a validated predictor or a causal estimate.</footer>
+</div>
+<script>
+const CELLS = [["Organic acquisition","High",0,0,59,49,5,1],["Organic acquisition","High",0,1,698,548,14,3],["Organic acquisition","High",10,0,15,9,1,0],["Organic acquisition","High",10,1,286,223,6,0],["Organic acquisition","High",25,0,2,2,1,1],["Organic acquisition","High",25,1,108,76,9,3],["Organic acquisition","High",40,0,1,1,0,0],["Organic acquisition","High",40,1,36,26,3,1],["Organic acquisition","Low",0,0,229,177,12,4],["Organic acquisition","Low",0,1,666,521,17,3],["Organic acquisition","Low",10,0,103,84,8,0],["Organic acquisition","Low",10,1,237,178,11,2],["Organic acquisition","Low",25,0,20,16,0,0],["Organic acquisition","Low",25,1,104,77,6,2],["Organic acquisition","Low",40,0,1,1,0,0],["Organic acquisition","Low",40,1,40,29,6,1],["Organic acquisition","Moderate",0,0,118,89,4,3],["Organic acquisition","Moderate",0,1,803,637,24,9],["Organic acquisition","Moderate",10,0,47,40,3,1],["Organic acquisition","Moderate",10,1,295,230,14,4],["Organic acquisition","Moderate",25,0,10,6,1,0],["Organic acquisition","Moderate",25,1,131,106,5,1],["Organic acquisition","Moderate",40,0,3,3,2,0],["Organic acquisition","Moderate",40,1,50,41,3,0],["Organic acquisition","No recent activity",0,0,206,126,37,8],["Organic acquisition","No recent activity",0,1,275,172,39,9],["Organic acquisition","No recent activity",10,0,88,54,13,3],["Organic acquisition","No recent activity",10,1,98,57,8,2],["Organic acquisition","No recent activity",25,0,34,17,10,1],["Organic acquisition","No recent activity",25,1,42,28,6,2],["Organic acquisition","No recent activity",40,0,8,5,4,3],["Organic acquisition","No recent activity",40,1,16,8,2,0],["Partner acquisition","High",0,0,19,16,0,0],["Partner acquisition","High",0,1,319,256,8,5],["Partner acquisition","High",10,0,10,10,1,0],["Partner acquisition","High",10,1,107,83,3,1],["Partner acquisition","High",25,0,1,0,0,0],["Partner acquisition","High",25,1,65,49,5,2],["Partner acquisition","High",40,1,10,8,0,0],["Partner acquisition","Low",0,0,102,77,5,0],["Partner acquisition","Low",0,1,295,234,7,1],["Partner acquisition","Low",10,0,33,26,2,0],["Partner acquisition","Low",10,1,121,96,4,0],["Partner acquisition","Low",25,0,10,9,0,0],["Partner acquisition","Low",25,1,46,38,1,0],["Partner acquisition","Low",40,0,4,3,0,0],["Partner acquisition","Low",40,1,10,8,0,0],["Partner acquisition","Moderate",0,0,53,38,6,0],["Partner acquisition","Moderate",0,1,368,298,13,4],["Partner acquisition","Moderate",10,0,18,14,1,1],["Partner acquisition","Moderate",10,1,123,91,4,0],["Partner acquisition","Moderate",25,0,5,4,2,0],["Partner acquisition","Moderate",25,1,58,47,3,0],["Partner acquisition","Moderate",40,0,1,1,0,0],["Partner acquisition","Moderate",40,1,20,18,0,0],["Partner acquisition","No recent activity",0,0,91,57,14,2],["Partner acquisition","No recent activity",0,1,109,66,12,4],["Partner acquisition","No recent activity",10,0,29,17,4,0],["Partner acquisition","No recent activity",10,1,37,23,3,0],["Partner acquisition","No recent activity",25,0,18,10,5,2],["Partner acquisition","No recent activity",25,1,19,13,6,2],["Partner acquisition","No recent activity",40,0,5,2,2,1],["Partner acquisition","No recent activity",40,1,2,0,1,1],["Promotional acquisition","High",0,0,9,7,1,0],["Promotional acquisition","High",0,1,117,102,9,1],["Promotional acquisition","High",10,0,22,17,2,0],["Promotional acquisition","High",10,1,224,180,12,4],["Promotional acquisition","High",25,0,9,6,1,0],["Promotional acquisition","High",25,1,444,333,42,10],["Promotional acquisition","High",40,0,6,3,1,0],["Promotional acquisition","High",40,1,395,308,29,7],["Promotional acquisition","Low",0,0,44,32,5,0],["Promotional acquisition","Low",0,1,123,104,1,0],["Promotional acquisition","Low",10,0,97,84,4,2],["Promotional acquisition","Low",10,1,217,177,9,3],["Promotional acquisition","Low",25,0,113,91,14,1],["Promotional acquisition","Low",25,1,469,364,40,12],["Promotional acquisition","Low",40,0,99,71,8,2],["Promotional acquisition","Low",40,1,344,279,30,4],["Promotional acquisition","Moderate",0,0,20,16,1,0],["Promotional acquisition","Moderate",0,1,137,113,4,3],["Promotional acquisition","Moderate",10,0,48,42,3,0],["Promotional acquisition","Moderate",10,1,282,224,5,1],["Promotional acquisition","Moderate",25,0,36,29,8,0],["Promotional acquisition","Moderate",25,1,522,418,46,14],["Promotional acquisition","Moderate",40,0,31,26,4,0],["Promotional acquisition","Moderate",40,1,430,336,29,4],["Promotional acquisition","No recent activity",0,0,33,21,7,1],["Promotional acquisition","No recent activity",0,1,55,37,7,0],["Promotional acquisition","No recent activity",10,0,69,44,16,2],["Promotional acquisition","No recent activity",10,1,99,64,9,4],["Promotional acquisition","No recent activity",25,0,114,72,27,4],["Promotional acquisition","No recent activity",25,1,184,112,30,5],["Promotional acquisition","No recent activity",40,0,103,59,24,8],["Promotional acquisition","No recent activity",40,1,168,98,30,8]];
+const PRICE = 30, COST = 6;
+const CHANNELS = ["Organic acquisition", "Promotional acquisition", "Partner acquisition"];
+const SHORT = { "Organic acquisition": "Organic", "Promotional acquisition": "Promotional", "Partner acquisition": "Partner" };
+const $ = (id) => document.getElementById(id);
+const pct = (v, d = 0) => (v * 100).toFixed(d) + "%";
+const usd = (v, d = 0) => (v < 0 ? "-$" : "$") + Math.abs(v).toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
+
+function rows(channel) { return channel === "All" ? CELLS : CELLS.filter((c) => c[0] === channel); }
+function stats(cells) {
+  let n = 0, ren = 0, full = 0, contrib = 0, engaged = 0, aware = 0;
+  for (const [, eng, d, r, k, aw] of cells) {
+    n += k; aware += aw;
+    if (eng === "High" || eng === "Moderate") engaged += k;
+    if (r) { ren += k; if (d === 0) full += k; contrib += k * (PRICE * (1 - d / 100) - COST); }
+  }
+  return { n, renewal: ren / n, full: full / n, disc: (ren - full) / n, contrib, perCust: contrib / n, engaged: engaged / n, aware: aware / n, fullOfRenewers: full / ren };
+}
+// Same arithmetic as scenario() in model.py
+function scenario(cells, reduction, loss) {
+  let total = 0;
+  for (const [, , d, r, k] of cells) {
+    const nd = d * (1 - reduction / 100);
+    const nr = d > 0 ? Math.min(1, Math.max(0, r - loss * reduction / 10)) : r;
+    total += k * (PRICE * (1 - nd / 100) - COST) * nr;
+  }
+  return total;
+}
+function split100(parts) {
+  const raw = parts.map((p) => p * 100), base = raw.map(Math.floor);
+  let rest = 100 - base.reduce((a, b) => a + b, 0);
+  raw.map((v, i) => [v - base[i], i]).sort((a, b) => b[0] - a[0]).forEach(([, i]) => { if (rest-- > 0) base[i]++; });
+  return base;
+}
+
+/* Hero */
+const waffle = $("waffle");
+for (let i = 0; i < 100; i++) waffle.appendChild(document.createElement("i"));
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function drawHero(channel, stagger) {
+  const s = stats(rows(channel));
+  const [full, disc, left] = split100([s.full, s.disc, 1 - s.renewal]);
+  [...waffle.children].forEach((el, i) => {
+    el.style.transitionDelay = stagger && !reduce ? i * 9 + "ms" : "0ms";
+    el.className = i < full ? "full" : i < full + disc ? "disc" : "";
+  });
+  $("k-full").textContent = full; $("k-disc").textContent = disc; $("k-left").textContent = left;
+  const who = channel === "All" ? "customers" : SHORT[channel].toLowerCase() + " customers";
+  $("headline").textContent = `${full + disc} of 100 ${who} renewed. Only ${full} paid full price.`;
+  waffle.setAttribute("aria-label", `Out of 100 ${who}: ${full} renewed at full price, ${disc} renewed on a discount, ${left} did not renew.`);
+}
+const chan = $("chan");
+["All", ...CHANNELS].forEach((c) => {
+  const b = document.createElement("button");
+  b.type = "button"; b.textContent = c === "All" ? "All customers" : SHORT[c];
+  b.setAttribute("aria-pressed", c === "All");
+  b.onclick = () => { chan.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b)); drawHero(c, false); };
+  chan.appendChild(b);
+});
+requestAnimationFrame(() => drawHero("All", true));
+
+/* Cohorts */
+const per = CHANNELS.map((c) => ({ c, ...stats(rows(c)) }));
+const maxMoney = Math.max(...per.map((p) => p.perCust));
+const cohort = $("cohort"), tip = $("tip");
+cohort.innerHTML = `<span></span><span class="hd">Share of customers who renewed</span><span class="hd">Monthly contribution per customer</span>` +
+  per.map((p) => `<span class="lab">${SHORT[p.c]}</span>
+   <div class="track" data-h="Share of customers who renewed" data-tip="${SHORT[p.c]}: ${pct(p.renewal, 1)} renewed. ${pct(p.full, 1)} at full price, ${pct(p.disc, 1)} on a discount.">
+     <span class="seg-bar full" style="width:${p.full * 78}%"></span><span class="seg-bar disc" style="width:${p.disc * 78}%"></span><span class="val">${pct(p.renewal)}</span></div>
+   <div class="track" data-h="Monthly contribution per customer" data-tip="${SHORT[p.c]}: ${usd(p.perCust, 2)} a month per customer due to renew, after discounts and cost to serve.">
+     <span class="seg-bar money" style="width:${p.perCust / maxMoney * 78}%"></span><span class="val">${usd(p.perCust, 2)}</span></div>`).join("");
+function hook(box, tipEl) {
+  box.addEventListener("pointermove", (e) => {
+    const t = e.target.closest("[data-tip]");
+    if (!t) return tipEl.classList.remove("on");
+    tipEl.textContent = t.dataset.tip; tipEl.style.whiteSpace = "normal"; tipEl.style.maxWidth = "19rem";
+    const r = box.getBoundingClientRect();
+    tipEl.style.left = Math.min(e.clientX - r.left + 14, r.width - 300) + "px";
+    tipEl.style.top = e.clientY - r.top + 18 + "px";
+    tipEl.classList.add("on");
+  });
+  box.addEventListener("pointerleave", () => tipEl.classList.remove("on"));
+}
+hook(cohort.parentElement, tip);
+const best = [...per].sort((a, b) => b.renewal - a.renewal)[0], richest = [...per].sort((a, b) => b.perCust - a.perCust)[0];
+$("cohort-take").textContent = `${SHORT[best.c]} customers renew at ${pct(best.renewal)}, the best of the three groups, and bring in ${usd(best.perCust, 2)} each a month. ${SHORT[richest.c]} customers bring in ${usd(richest.perCust, 2)}. The renewal rate rewards the discount, and the margin pays for it.`;
+$("cohort-table").innerHTML = `<table><thead><tr><th>Acquired through</th><th>Customers</th><th>Renewed</th><th>At full price</th><th>On a discount</th><th>Contribution per customer</th></tr></thead><tbody>` +
+  per.map((p) => `<tr><td>${SHORT[p.c]}</td><td>${p.n.toLocaleString("en-US")}</td><td>${pct(p.renewal, 1)}</td><td>${pct(p.full, 1)}</td><td>${pct(p.disc, 1)}</td><td>${usd(p.perCust, 2)}</td></tr>`).join("") + `</tbody></table>`;
+
+/* Dimensions */
+const all = stats(CELLS);
+$("d-val").textContent = pct(all.engaged); $("d-eco").textContent = pct(all.fullOfRenewers); $("d-cho").textContent = pct(all.aware);
+
+/* Sensitivity */
+const svg = $("sens-svg"), W = 640, H = 340, M = { l: 58, r: 22, t: 16, b: 44 };
+const X = (v) => M.l + (v / 100) * (W - M.l - M.r);
+let curve = [], Y = () => 0;
+function drawSens() {
+  const red = +$("red").value, loss = +$("loss").value;
+  $("red-o").textContent = red + "%";
+  $("loss-o").textContent = `${loss} ${loss === 1 ? "point" : "points"} per 10% cut`;
+  curve = []; for (let r = 0; r <= 100; r += 5) curve.push([r, scenario(CELLS, r, loss / 100)]);
+  const obs = all.contrib, now = scenario(CELLS, red, loss / 100), delta = now - obs;
+  const vals = curve.map((p) => p[1]).concat(obs);
+  let lo = Math.min(...vals), hi = Math.max(...vals); const pad = Math.max((hi - lo) * 0.12, 4000); lo -= pad; hi += pad;
+  Y = (v) => M.t + (1 - (v - lo) / (hi - lo)) * (H - M.t - M.b);
+  const step = (hi - lo) > 120000 ? 50000 : (hi - lo) > 50000 ? 20000 : 10000;
+  let g = "";
+  for (let t = Math.ceil(lo / step) * step; t <= hi; t += step) g += `<line x1="${M.l}" x2="${W - M.r}" y1="${Y(t)}" y2="${Y(t)}" stroke="#22345C"/><text x="${M.l - 8}" y="${Y(t) + 5}" text-anchor="end">$${t / 1000}k</text>`;
+  for (const t of [0, 25, 50, 75, 100]) g += `<text x="${X(t)}" y="${H - 16}" text-anchor="middle">${t}%</text>`;
+  g += `<line x1="${M.l}" x2="${W - M.r}" y1="${Y(obs)}" y2="${Y(obs)}" stroke="#A8B4CE" stroke-width="1.5" stroke-dasharray="5 5"/><text x="${W - M.r}" y="${Y(obs) + (delta >= 0 ? 18 : -8)}" text-anchor="end" style="fill:#C9D3EA">Today: ${usd(obs)}</text>`;
+  g += `<path d="${curve.map((p, i) => (i ? "L" : "M") + X(p[0]) + " " + Y(p[1])).join(" ")}" fill="none" stroke="#C4961F" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  g += `<line id="cross" x1="0" x2="0" y1="${M.t}" y2="${H - M.b}" stroke="#A8B4CE" stroke-width="1" visibility="hidden"/>`;
+  g += `<circle cx="${X(red)}" cy="${Y(now)}" r="7" fill="#C4961F" stroke="#0B1A38" stroke-width="2"/>`;
+  svg.innerHTML = g;
+  let be = null; if (red > 0) for (let e = 0; e <= 15.001; e += 0.1) { if (scenario(CELLS, red, e / 100) < obs) { be = e; break; } }
+  const verb = delta >= 0 ? "adds" : "costs";
+  $("result").innerHTML = red === 0 ? `<strong>${usd(obs)}</strong>is what these customers contribute a month today. Move the first slider to test a cut.` :
+    `<strong>${delta >= 0 ? "+" : ""}${usd(delta)} a month</strong>Cutting discounts by ${red}% ${verb} ${usd(Math.abs(delta))} a month under this assumption. ` +
+    (be === null ? "It keeps paying across the whole range of the second slider." : `It stops paying once renewals fall by about ${be.toFixed(1)} points per 10% cut.`);
+}
+$("red").oninput = drawSens; $("loss").oninput = drawSens; drawSens();
+const box2 = $("sens-box"), tip2 = $("tip2");
+svg.addEventListener("pointermove", (e) => {
+  const r = svg.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W;
+  const i = Math.max(0, Math.min(20, Math.round((x - M.l) / (W - M.l - M.r) * 20))), p = curve[i], d = p[1] - all.contrib;
+  const c = svg.querySelector("#cross"); c.setAttribute("x1", X(p[0])); c.setAttribute("x2", X(p[0])); c.setAttribute("visibility", "visible");
+  tip2.textContent = `${p[0]}% cut: ${usd(p[1])} a month (${d >= 0 ? "+" : ""}${usd(d)})`;
+  const br = box2.getBoundingClientRect();
+  tip2.style.left = Math.min(Math.max(0, e.clientX - br.left + 14), br.width - 250) + "px"; tip2.style.top = e.clientY - br.top - 44 + "px";
+  tip2.classList.add("on");
+});
+svg.addEventListener("pointerleave", () => { tip2.classList.remove("on"); const c = svg.querySelector("#cross"); if (c) c.setAttribute("visibility", "hidden"); });
 </script>
 </body>
 </html>
