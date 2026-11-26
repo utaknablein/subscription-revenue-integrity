@@ -9,12 +9,12 @@
 <meta property="og:description" content="82 of 100 customers renewed. Only 33 paid full price. An interactive prototype on simulated data.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://utaknablein.github.io/subscription-revenue-integrity/">
-<meta property="og:image" content="https://utaknablein.github.io/subscription-revenue-integrity/thumbnail.png">
+<meta property="og:image" content="https://utaknablein.github.io/subscription-revenue-integrity/social-preview.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="82 of 100 customers renewed. Only 33 paid full price.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://utaknablein.github.io/subscription-revenue-integrity/thumbnail.png">
+<meta name="twitter:image" content="https://utaknablein.github.io/subscription-revenue-integrity/social-preview.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B1A38'/%3E%3Crect x='6' y='6' width='9' height='9' rx='2' fill='%23C4961F'/%3E%3Crect x='17' y='6' width='9' height='9' rx='2' fill='%23C4961F'/%3E%3Crect x='6' y='17' width='9' height='9' rx='2' fill='%234A8AE6'/%3E%3Crect x='17.75' y='17.75' width='7.5' height='7.5' rx='1.5' fill='none' stroke='%236F80A6' stroke-width='1.5'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -112,6 +112,24 @@ ol.value b{display:block;font-size:1.08rem;margin-bottom:.3rem}
 .btn:hover{background:var(--ink);color:#0B1A38}
 footer{border-top:1px solid var(--rule);padding:1.5rem 0 3rem;color:var(--muted);font-size:.95rem}
 
+
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+label.btn{cursor:pointer;margin-right:1rem}
+input.vh:focus-visible + a, label.btn:focus-within{outline:3px solid var(--gold);outline-offset:3px}
+.err{color:#FFB4A8;font-weight:700}
+.money{display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:end;max-width:30rem;margin:1.25rem 0;font-size:.95rem;color:var(--muted)}
+.money input{display:block;width:100%;margin-top:.35rem;font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid var(--rule);border-radius:8px;padding:.45rem .6rem}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9em;background:var(--panel);padding:.05em .35em;border-radius:4px}
+.close ul{margin:.25rem 0 1rem;padding-left:1.2rem}
+.status{background:var(--panel);border-left:4px solid var(--gold);border-radius:8px;padding:1rem 1.25rem;margin-top:1.5rem;font-size:1rem}
+.status strong{font-size:1.1rem}
+.status button{font:inherit;color:var(--ink);background:transparent;border:1.5px solid var(--muted);border-radius:999px;padding:.25rem .9rem;margin-left:.75rem;cursor:pointer}
+.status button:hover{border-color:var(--ink)}
+.status details{margin-top:.5rem}
+.status ul{margin:.4rem 0 0;padding-left:1.2rem;color:var(--muted)}
+.status .eng{margin-top:.6rem;color:var(--muted)}
+.status .eng label{margin-right:1rem;color:var(--ink);white-space:nowrap}
+.nm{color:var(--muted)}
 @media (max-width:860px){
   .hero{grid-template-columns:1fr;gap:2.5rem;padding:3rem 0}
   .sens,.close{grid-template-columns:1fr;gap:2rem}
@@ -131,16 +149,17 @@ footer{border-top:1px solid var(--rule);padding:1.5rem 0 3rem;color:var(--muted)
 <div class="wrap">
 <header class="top">
   <span class="name">Subscription Revenue Integrity</span>
-  <nav><a href="tool.html">Run it on your own data</a><a href="https://www.utaknablein.com">Uta Knablein</a></nav>
+  <nav><a href="#own">Use your own data</a><a href="https://www.utaknablein.com">Uta Knablein</a></nav>
 </header>
 
 <main>
+<div class="status" id="status" hidden></div>
 <div class="hero">
   <div>
     <h1 id="headline">82 of 100 customers renewed. Only 33 paid full price.</h1>
     <p class="lede">A renewal rate tells you who stayed. It does not tell you what staying was worth. Are we building customer loyalty or merely recording renewals?</p>
     <fieldset class="seg" id="chan"><legend>See it by how the customer was acquired</legend></fieldset>
-    <p class="note">Simulated data for 12,000 subscribers. The figures illustrate the method and describe no real business.</p>
+    <p class="note" id="hero-note"></p>
   </div>
   <div>
     <div class="waffle" id="waffle" role="img" aria-label="100 squares, one per customer out of 100"></div>
@@ -153,14 +172,14 @@ footer{border-top:1px solid var(--rule);padding:1.5rem 0 3rem;color:var(--muted)
 </div>
 
 <section class="block">
-  <h2>The customers who renew most are worth the least</h2>
+  <h2 id="cohort-h"></h2>
   <p class="take" id="cohort-take"></p>
-  <div class="chartbox">
+  <div class="chartbox" id="cohort-box">
     <div class="cohort" id="cohort"></div>
     <div class="tip" id="tip"></div>
   </div>
-  <p class="legend"><span><i style="background:var(--full)"></i>Renewed at full price</span><span><i style="background:var(--disc)"></i>Renewed on a discount</span></p>
-  <details><summary>Show the numbers as a table</summary><div id="cohort-table"></div></details>
+  <p class="legend" id="cohort-legend"><span><i style="background:var(--full)"></i>Renewed at full price</span><span><i style="background:var(--disc)"></i>Renewed on a discount</span></p>
+  <details id="cohort-details"><summary>Show the numbers as a table</summary><div id="cohort-table"></div></details>
 </section>
 
 <section class="block">
@@ -173,7 +192,7 @@ footer{border-top:1px solid var(--rule);padding:1.5rem 0 3rem;color:var(--muted)
       <div class="result" id="result" aria-live="polite"></div>
     </div>
     <div class="chartbox" id="sens-box">
-      <p class="sub">Monthly contribution from these 12,000 customers, by size of discount cut</p>
+      <p class="sub" id="sens-sub"></p>
       <svg id="sens-svg" viewBox="0 0 640 340" role="img" aria-label="Line chart of monthly contribution against the size of the discount cut"></svg>
       <div class="tip" id="tip2"></div>
     </div>
@@ -185,9 +204,9 @@ footer{border-top:1px solid var(--rule);padding:1.5rem 0 3rem;color:var(--muted)
   <h2>Three questions a renewal rate cannot answer</h2>
   <p class="take">Each is measured on its own. Blending them into one score would hide exactly the differences that matter.</p>
   <div class="dims">
-    <div><h3>Customer value</h3><p>Are we earning the relationship through value delivered?</p><span class="fig" id="d-val"></span><span class="cap">of customers actively use the product</span></div>
+    <div><h3>Customer value</h3><p>Are we earning the relationship through value delivered?</p><span class="fig" id="d-val"></span><span class="cap" id="c-val">of customers actively use the product</span></div>
     <div><h3>Economic quality</h3><p>Are these renewals financially sustainable?</p><span class="fig" id="d-eco"></span><span class="cap">of renewers pay full price</span></div>
-    <div><h3>Choice integrity</h3><p>Can customers make an informed choice?</p><span class="fig" id="d-cho"></span><span class="cap">say they knew the renewal was coming</span></div>
+    <div><h3>Choice integrity</h3><p>Can customers make an informed choice?</p><span class="fig" id="d-cho"></span><span class="cap" id="c-cho">say they knew the renewal was coming</span></div>
   </div>
 </section>
 
@@ -205,11 +224,20 @@ footer{border-top:1px solid var(--rule);padding:1.5rem 0 3rem;color:var(--muted)
 
 <section class="block">
   <div class="close">
-    <div>
+    <div id="own">
       <h2>Try it on your own customers</h2>
-      <p>The full tool takes a customer export with two required columns and runs every view on your data. It works inside your browser, so the file stays on your device.</p>
-      <p><a class="btn" href="tool.html">Open the full tool</a></p>
-      <p class="note">It needs about half a minute to load.</p>
+      <p>Upload a customer export and this whole page redraws with your numbers. The file is read inside your browser and never leaves your device.</p>
+      <p><label class="btn" for="file">Choose a CSV file</label><input type="file" id="file" accept=".csv,text/csv" class="vh"> <a id="tpl" href="#" download="subscription_template.csv">Download a template</a></p>
+      <p class="err" id="err" role="alert" hidden></p>
+      <div class="money">
+        <label>Monthly list price<input type="number" id="price" min="0" step="1" value="30"></label>
+        <label>Monthly cost to serve a renewing customer<input type="number" id="cost" min="0" step="0.5" value="6"></label>
+      </div>
+      <details><summary>Which columns the file needs</summary>
+        <p>One row per customer who was due to renew. Two columns are required:</p>
+        <ul><li><code>renewed</code>: yes or no, 1 or 0, true or false</li><li><code>discount_pct</code>: the discount on the renewal, 0 to 100</li></ul>
+        <p>Optional columns, each of which unlocks a view: <code>acquisition_source</code>, <code>engagement</code>, <code>survey_aware_of_renewal</code>, <code>cancellation_attempt</code>, <code>cancellation_friction_observed</code>, <code>monthly_revenue</code>, <code>monthly_contribution</code>.</p>
+      </details>
     </div>
     <div>
       <h2>Who built this</h2>
@@ -223,31 +251,117 @@ footer{border-top:1px solid var(--rule);padding:1.5rem 0 3rem;color:var(--muted)
 <footer>© 2026 Uta Knablein. All rights reserved. A research prototype on simulated data. It is not a validated predictor or a causal estimate.</footer>
 </div>
 <script>
-const CELLS = [["Organic acquisition","High",0,0,59,49,5,1],["Organic acquisition","High",0,1,698,548,14,3],["Organic acquisition","High",10,0,15,9,1,0],["Organic acquisition","High",10,1,286,223,6,0],["Organic acquisition","High",25,0,2,2,1,1],["Organic acquisition","High",25,1,108,76,9,3],["Organic acquisition","High",40,0,1,1,0,0],["Organic acquisition","High",40,1,36,26,3,1],["Organic acquisition","Low",0,0,229,177,12,4],["Organic acquisition","Low",0,1,666,521,17,3],["Organic acquisition","Low",10,0,103,84,8,0],["Organic acquisition","Low",10,1,237,178,11,2],["Organic acquisition","Low",25,0,20,16,0,0],["Organic acquisition","Low",25,1,104,77,6,2],["Organic acquisition","Low",40,0,1,1,0,0],["Organic acquisition","Low",40,1,40,29,6,1],["Organic acquisition","Moderate",0,0,118,89,4,3],["Organic acquisition","Moderate",0,1,803,637,24,9],["Organic acquisition","Moderate",10,0,47,40,3,1],["Organic acquisition","Moderate",10,1,295,230,14,4],["Organic acquisition","Moderate",25,0,10,6,1,0],["Organic acquisition","Moderate",25,1,131,106,5,1],["Organic acquisition","Moderate",40,0,3,3,2,0],["Organic acquisition","Moderate",40,1,50,41,3,0],["Organic acquisition","No recent activity",0,0,206,126,37,8],["Organic acquisition","No recent activity",0,1,275,172,39,9],["Organic acquisition","No recent activity",10,0,88,54,13,3],["Organic acquisition","No recent activity",10,1,98,57,8,2],["Organic acquisition","No recent activity",25,0,34,17,10,1],["Organic acquisition","No recent activity",25,1,42,28,6,2],["Organic acquisition","No recent activity",40,0,8,5,4,3],["Organic acquisition","No recent activity",40,1,16,8,2,0],["Partner acquisition","High",0,0,19,16,0,0],["Partner acquisition","High",0,1,319,256,8,5],["Partner acquisition","High",10,0,10,10,1,0],["Partner acquisition","High",10,1,107,83,3,1],["Partner acquisition","High",25,0,1,0,0,0],["Partner acquisition","High",25,1,65,49,5,2],["Partner acquisition","High",40,1,10,8,0,0],["Partner acquisition","Low",0,0,102,77,5,0],["Partner acquisition","Low",0,1,295,234,7,1],["Partner acquisition","Low",10,0,33,26,2,0],["Partner acquisition","Low",10,1,121,96,4,0],["Partner acquisition","Low",25,0,10,9,0,0],["Partner acquisition","Low",25,1,46,38,1,0],["Partner acquisition","Low",40,0,4,3,0,0],["Partner acquisition","Low",40,1,10,8,0,0],["Partner acquisition","Moderate",0,0,53,38,6,0],["Partner acquisition","Moderate",0,1,368,298,13,4],["Partner acquisition","Moderate",10,0,18,14,1,1],["Partner acquisition","Moderate",10,1,123,91,4,0],["Partner acquisition","Moderate",25,0,5,4,2,0],["Partner acquisition","Moderate",25,1,58,47,3,0],["Partner acquisition","Moderate",40,0,1,1,0,0],["Partner acquisition","Moderate",40,1,20,18,0,0],["Partner acquisition","No recent activity",0,0,91,57,14,2],["Partner acquisition","No recent activity",0,1,109,66,12,4],["Partner acquisition","No recent activity",10,0,29,17,4,0],["Partner acquisition","No recent activity",10,1,37,23,3,0],["Partner acquisition","No recent activity",25,0,18,10,5,2],["Partner acquisition","No recent activity",25,1,19,13,6,2],["Partner acquisition","No recent activity",40,0,5,2,2,1],["Partner acquisition","No recent activity",40,1,2,0,1,1],["Promotional acquisition","High",0,0,9,7,1,0],["Promotional acquisition","High",0,1,117,102,9,1],["Promotional acquisition","High",10,0,22,17,2,0],["Promotional acquisition","High",10,1,224,180,12,4],["Promotional acquisition","High",25,0,9,6,1,0],["Promotional acquisition","High",25,1,444,333,42,10],["Promotional acquisition","High",40,0,6,3,1,0],["Promotional acquisition","High",40,1,395,308,29,7],["Promotional acquisition","Low",0,0,44,32,5,0],["Promotional acquisition","Low",0,1,123,104,1,0],["Promotional acquisition","Low",10,0,97,84,4,2],["Promotional acquisition","Low",10,1,217,177,9,3],["Promotional acquisition","Low",25,0,113,91,14,1],["Promotional acquisition","Low",25,1,469,364,40,12],["Promotional acquisition","Low",40,0,99,71,8,2],["Promotional acquisition","Low",40,1,344,279,30,4],["Promotional acquisition","Moderate",0,0,20,16,1,0],["Promotional acquisition","Moderate",0,1,137,113,4,3],["Promotional acquisition","Moderate",10,0,48,42,3,0],["Promotional acquisition","Moderate",10,1,282,224,5,1],["Promotional acquisition","Moderate",25,0,36,29,8,0],["Promotional acquisition","Moderate",25,1,522,418,46,14],["Promotional acquisition","Moderate",40,0,31,26,4,0],["Promotional acquisition","Moderate",40,1,430,336,29,4],["Promotional acquisition","No recent activity",0,0,33,21,7,1],["Promotional acquisition","No recent activity",0,1,55,37,7,0],["Promotional acquisition","No recent activity",10,0,69,44,16,2],["Promotional acquisition","No recent activity",10,1,99,64,9,4],["Promotional acquisition","No recent activity",25,0,114,72,27,4],["Promotional acquisition","No recent activity",25,1,184,112,30,5],["Promotional acquisition","No recent activity",40,0,103,59,24,8],["Promotional acquisition","No recent activity",40,1,168,98,30,8]];
-const PRICE = 30, COST = 6;
-const CHANNELS = ["Organic acquisition", "Promotional acquisition", "Partner acquisition"];
+const SIM_CELLS = [["Organic acquisition","High",0,0,59,49,5,1],["Organic acquisition","High",0,1,698,548,14,3],["Organic acquisition","High",10,0,15,9,1,0],["Organic acquisition","High",10,1,286,223,6,0],["Organic acquisition","High",25,0,2,2,1,1],["Organic acquisition","High",25,1,108,76,9,3],["Organic acquisition","High",40,0,1,1,0,0],["Organic acquisition","High",40,1,36,26,3,1],["Organic acquisition","Low",0,0,229,177,12,4],["Organic acquisition","Low",0,1,666,521,17,3],["Organic acquisition","Low",10,0,103,84,8,0],["Organic acquisition","Low",10,1,237,178,11,2],["Organic acquisition","Low",25,0,20,16,0,0],["Organic acquisition","Low",25,1,104,77,6,2],["Organic acquisition","Low",40,0,1,1,0,0],["Organic acquisition","Low",40,1,40,29,6,1],["Organic acquisition","Moderate",0,0,118,89,4,3],["Organic acquisition","Moderate",0,1,803,637,24,9],["Organic acquisition","Moderate",10,0,47,40,3,1],["Organic acquisition","Moderate",10,1,295,230,14,4],["Organic acquisition","Moderate",25,0,10,6,1,0],["Organic acquisition","Moderate",25,1,131,106,5,1],["Organic acquisition","Moderate",40,0,3,3,2,0],["Organic acquisition","Moderate",40,1,50,41,3,0],["Organic acquisition","No recent activity",0,0,206,126,37,8],["Organic acquisition","No recent activity",0,1,275,172,39,9],["Organic acquisition","No recent activity",10,0,88,54,13,3],["Organic acquisition","No recent activity",10,1,98,57,8,2],["Organic acquisition","No recent activity",25,0,34,17,10,1],["Organic acquisition","No recent activity",25,1,42,28,6,2],["Organic acquisition","No recent activity",40,0,8,5,4,3],["Organic acquisition","No recent activity",40,1,16,8,2,0],["Partner acquisition","High",0,0,19,16,0,0],["Partner acquisition","High",0,1,319,256,8,5],["Partner acquisition","High",10,0,10,10,1,0],["Partner acquisition","High",10,1,107,83,3,1],["Partner acquisition","High",25,0,1,0,0,0],["Partner acquisition","High",25,1,65,49,5,2],["Partner acquisition","High",40,1,10,8,0,0],["Partner acquisition","Low",0,0,102,77,5,0],["Partner acquisition","Low",0,1,295,234,7,1],["Partner acquisition","Low",10,0,33,26,2,0],["Partner acquisition","Low",10,1,121,96,4,0],["Partner acquisition","Low",25,0,10,9,0,0],["Partner acquisition","Low",25,1,46,38,1,0],["Partner acquisition","Low",40,0,4,3,0,0],["Partner acquisition","Low",40,1,10,8,0,0],["Partner acquisition","Moderate",0,0,53,38,6,0],["Partner acquisition","Moderate",0,1,368,298,13,4],["Partner acquisition","Moderate",10,0,18,14,1,1],["Partner acquisition","Moderate",10,1,123,91,4,0],["Partner acquisition","Moderate",25,0,5,4,2,0],["Partner acquisition","Moderate",25,1,58,47,3,0],["Partner acquisition","Moderate",40,0,1,1,0,0],["Partner acquisition","Moderate",40,1,20,18,0,0],["Partner acquisition","No recent activity",0,0,91,57,14,2],["Partner acquisition","No recent activity",0,1,109,66,12,4],["Partner acquisition","No recent activity",10,0,29,17,4,0],["Partner acquisition","No recent activity",10,1,37,23,3,0],["Partner acquisition","No recent activity",25,0,18,10,5,2],["Partner acquisition","No recent activity",25,1,19,13,6,2],["Partner acquisition","No recent activity",40,0,5,2,2,1],["Partner acquisition","No recent activity",40,1,2,0,1,1],["Promotional acquisition","High",0,0,9,7,1,0],["Promotional acquisition","High",0,1,117,102,9,1],["Promotional acquisition","High",10,0,22,17,2,0],["Promotional acquisition","High",10,1,224,180,12,4],["Promotional acquisition","High",25,0,9,6,1,0],["Promotional acquisition","High",25,1,444,333,42,10],["Promotional acquisition","High",40,0,6,3,1,0],["Promotional acquisition","High",40,1,395,308,29,7],["Promotional acquisition","Low",0,0,44,32,5,0],["Promotional acquisition","Low",0,1,123,104,1,0],["Promotional acquisition","Low",10,0,97,84,4,2],["Promotional acquisition","Low",10,1,217,177,9,3],["Promotional acquisition","Low",25,0,113,91,14,1],["Promotional acquisition","Low",25,1,469,364,40,12],["Promotional acquisition","Low",40,0,99,71,8,2],["Promotional acquisition","Low",40,1,344,279,30,4],["Promotional acquisition","Moderate",0,0,20,16,1,0],["Promotional acquisition","Moderate",0,1,137,113,4,3],["Promotional acquisition","Moderate",10,0,48,42,3,0],["Promotional acquisition","Moderate",10,1,282,224,5,1],["Promotional acquisition","Moderate",25,0,36,29,8,0],["Promotional acquisition","Moderate",25,1,522,418,46,14],["Promotional acquisition","Moderate",40,0,31,26,4,0],["Promotional acquisition","Moderate",40,1,430,336,29,4],["Promotional acquisition","No recent activity",0,0,33,21,7,1],["Promotional acquisition","No recent activity",0,1,55,37,7,0],["Promotional acquisition","No recent activity",10,0,69,44,16,2],["Promotional acquisition","No recent activity",10,1,99,64,9,4],["Promotional acquisition","No recent activity",25,0,114,72,27,4],["Promotional acquisition","No recent activity",25,1,184,112,30,5],["Promotional acquisition","No recent activity",40,0,103,59,24,8],["Promotional acquisition","No recent activity",40,1,168,98,30,8]];
+const TEMPLATE = "customer_id,acquisition_source,tenure_months,engagement,discount_pct,survey_aware_of_renewal,cancellation_attempt,cancellation_friction_observed,renewed\n1,Promotional acquisition,24,Low,25,True,False,False,True\n2,Partner acquisition,30,High,10,True,False,False,True\n3,Promotional acquisition,16,Low,40,False,False,False,True\n4,Organic acquisition,24,Low,10,False,False,False,True\n5,Organic acquisition,8,Low,0,True,False,False,True\n6,Partner acquisition,22,Moderate,0,True,False,False,True\n7,Organic acquisition,9,Moderate,0,True,False,False,True\n8,Partner acquisition,7,Moderate,0,False,False,False,False\n9,Promotional acquisition,28,High,10,True,False,False,True\n10,Promotional acquisition,21,No recent activity,10,True,False,False,True\n11,Organic acquisition,14,Moderate,10,True,False,False,True\n12,Organic acquisition,2,Moderate,0,True,False,False,True\n13,Organic acquisition,9,Moderate,0,True,False,False,False\n14,Promotional acquisition,29,Low,40,True,False,False,True\n15,Promotional acquisition,17,Moderate,40,True,False,False,True\n16,Promotional acquisition,35,Low,25,True,False,False,True\n17,Partner acquisition,33,No recent activity,0,False,True,False,False\n18,Promotional acquisition,31,Moderate,25,False,False,False,True\n19,Promotional acquisition,1,High,10,True,False,False,True\n20,Partner acquisition,2,Low,0,False,False,False,True\n21,Organic acquisition,21,No recent activity,0,True,False,False,True\n22,Organic acquisition,13,High,10,True,False,False,True\n23,Promotional acquisition,31,Low,10,True,False,False,False\n24,Organic acquisition,12,Low,0,True,False,False,True\n25,Organic acquisition,6,No recent activity,0,True,False,False,False\n";
+const SIM_ORDER = ["Organic acquisition", "Promotional acquisition", "Partner acquisition"];
 const SHORT = { "Organic acquisition": "Organic", "Promotional acquisition": "Promotional", "Partner acquisition": "Partner" };
 const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const pct = (v, d = 0) => (v * 100).toFixed(d) + "%";
 const usd = (v, d = 0) => (v < 0 ? "-$" : "$") + Math.abs(v).toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
+const num = (v) => v.toLocaleString("en-US");
+const name = (c) => SHORT[c] || c;
 
-function rows(channel) { return channel === "All" ? CELLS : CELLS.filter((c) => c[0] === channel); }
-function stats(cells) {
-  let n = 0, ren = 0, full = 0, contrib = 0, engaged = 0, aware = 0;
-  for (const [, eng, d, r, k, aw] of cells) {
-    n += k; aware += aw;
-    if (eng === "High" || eng === "Moderate") engaged += k;
-    if (r) { ren += k; if (d === 0) full += k; contrib += k * (PRICE * (1 - d / 100) - COST); }
+/* ---------- data ---------- */
+// A row is one customer, or a group of k identical customers: c channel, e engagement, d discount %, r renewed 0/1,
+// k count, aw number who said they knew about the renewal (null if not measured), ct total monthly contribution.
+function simulated() {
+  return {
+    sim: true, price: 30, cost: 6, notes: [], file: null,
+    measured: { engagement: true, awareness: true, channel: true },
+    engaged: new Set(["High", "Moderate"]),
+    rows: SIM_CELLS.map(([c, e, d, r, k, aw]) => ({ c, e, d, r, k, aw, ct: k * r * (30 * (1 - d / 100) - 6) })),
+  };
+}
+let DS = simulated();
+let channel = "All";
+
+function parseCSV(text) {
+  const out = []; let row = [], cur = "", q = false;
+  text = text.replace(/^﻿/, "");
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (q) { if (ch === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === "," || ch === ";" && SEP === ";") { row.push(cur); cur = ""; }
+    else if (ch === "\n" || ch === "\r") { if (ch === "\r" && text[i + 1] === "\n") i++; row.push(cur); cur = ""; if (row.length > 1 || row[0] !== "") out.push(row); row = []; }
+    else cur += ch;
   }
-  return { n, renewal: ren / n, full: full / n, disc: (ren - full) / n, contrib, perCust: contrib / n, engaged: engaged / n, aware: aware / n, fullOfRenewers: full / ren };
+  row.push(cur); if (row.length > 1 || row[0] !== "") out.push(row);
+  return out;
+}
+let SEP = ",";
+const T = new Set(["1", "true", "t", "yes", "y", "renewed", "active"]);
+const F = new Set(["0", "false", "f", "no", "n", "churned", "cancelled", "canceled", "lapsed", "", "nan", "none"]);
+function toBool(v, col) {
+  const t = String(v ?? "").trim().toLowerCase();
+  if (T.has(t)) return 1; if (F.has(t)) return 0;
+  const n = Number(t); if (n === 1) return 1; if (n === 0) return 0;
+  throw new Error(`Column "${col}" has values that are not yes or no, for example "${v}".`);
+}
+// Mirrors prepare_uploaded() in model.py
+function prepare(text, price, cost, file) {
+  const head = text.split(/\r?\n/, 1)[0];
+  SEP = (head.split(";").length > head.split(",").length) ? ";" : ",";
+  const table = parseCSV(text);
+  if (table.length < 2) throw new Error("This file has no rows.");
+  const cols = table[0].map((c) => c.trim().toLowerCase().replace(/ /g, "_"));
+  const ix = (c) => cols.indexOf(c), has = (c) => ix(c) >= 0;
+  const missing = ["renewed", "discount_pct"].filter((c) => !has(c));
+  if (missing.length) throw new Error(`Missing required column: ${missing.join(" and ")}. The file needs renewed and discount_pct.`);
+  const body = table.slice(1);
+  if (body.length < 20) throw new Error("Upload at least 20 customer rows.");
+  const notes = [];
+  const get = (r, c) => (r[ix(c)] ?? "").trim();
+  let disc = body.map((r) => { const s = get(r, "discount_pct"); return s === "" ? NaN : Number(s); });
+  const bad = disc.filter(Number.isNaN).length;
+  if (bad) { notes.push(`${bad} rows had a non-numeric discount and were treated as 0% discount`); disc = disc.map((d) => Number.isNaN(d) ? 0 : d); }
+  if (disc.every((d) => d >= 0 && d <= 1) && disc.some((d) => d > 0)) { disc = disc.map((d) => d * 100); notes.push("discount_pct looked like a fraction (0 to 1) and was converted to percent"); }
+  disc = disc.map((d) => Math.min(100, Math.max(0, d)));
+  const measured = { engagement: has("engagement"), awareness: has("survey_aware_of_renewal"), channel: has("acquisition_source") };
+  if (!measured.channel) notes.push("No acquisition_source column: the channel view shows one group");
+  if (!measured.engagement) notes.push("No engagement column: customer value indicators are not available");
+  if (!measured.awareness) notes.push("No survey_aware_of_renewal column: renewal awareness is not measured in this data");
+  if (!has("cancellation_attempt")) notes.push("No cancellation_attempt column: cancellation attempts are not measured in this data");
+  if (!has("cancellation_friction_observed")) notes.push("No cancellation_friction_observed column: cancellation friction is not measured in this data");
+  const hasRev = has("monthly_revenue"), hasCon = has("monthly_contribution");
+  if (!hasRev) notes.push(`No monthly_revenue column: revenue valued at a $${price.toFixed(2)} list price less the discount`);
+  if (!hasCon) notes.push(`No monthly_contribution column: contribution is revenue less $${cost.toFixed(2)} cost to serve per renewal`);
+  const money = (s) => { const n = Number(s); return s === "" || Number.isNaN(n) ? 0 : n; };
+  const rows = body.map((r, i) => {
+    const ren = toBool(get(r, "renewed"), "renewed"), d = disc[i];
+    const rev = hasRev ? money(get(r, "monthly_revenue")) : ren * price * (1 - d / 100);
+    return {
+      c: measured.channel ? (get(r, "acquisition_source") || "Unknown") : "All customers",
+      e: measured.engagement ? (get(r, "engagement") || "Unknown") : "Not provided",
+      d, r: ren, k: 1,
+      aw: measured.awareness ? toBool(get(r, "survey_aware_of_renewal"), "survey_aware_of_renewal") : null,
+      ct: hasCon ? money(get(r, "monthly_contribution")) : rev - ren * cost,
+    };
+  });
+  const labels = [...new Set(rows.map((r) => r.e))].sort();
+  let engaged = labels.filter((l) => l === "High" || l === "Moderate"); if (!engaged.length) engaged = labels.slice(0, 1);
+  return { sim: false, price, cost, notes, measured, rows, file, labels, engaged: new Set(engaged) };
+}
+
+function pick(ch) { return ch === "All" ? DS.rows : DS.rows.filter((r) => r.c === ch); }
+function stats(rows) {
+  let n = 0, ren = 0, full = 0, ct = 0, eng = 0, aw = 0, awN = 0;
+  for (const r of rows) {
+    n += r.k; ct += r.ct;
+    if (DS.engaged.has(r.e)) eng += r.k;
+    if (r.aw !== null) { aw += r.aw; awN += r.k; }
+    if (r.r) { ren += r.k; if (r.d === 0) full += r.k; }
+  }
+  return { n, renewal: ren / n, full: full / n, disc: (ren - full) / n, contrib: ct, perCust: ct / n, engaged: eng / n, aware: awN ? aw / awN : null, fullOfRenewers: ren ? full / ren : 0 };
 }
 // Same arithmetic as scenario() in model.py
-function scenario(cells, reduction, loss) {
+function scenario(rows, reduction, loss) {
   let total = 0;
-  for (const [, , d, r, k] of cells) {
-    const nd = d * (1 - reduction / 100);
-    const nr = d > 0 ? Math.min(1, Math.max(0, r - loss * reduction / 10)) : r;
-    total += k * (PRICE * (1 - nd / 100) - COST) * nr;
+  for (const r of rows) {
+    const nd = r.d * (1 - reduction / 100);
+    const nr = r.d > 0 ? Math.min(1, Math.max(0, r.r - loss * reduction / 10)) : r.r;
+    total += r.k * (DS.price * (1 - nd / 100) - DS.cost) * nr;
   }
   return total;
 }
@@ -257,98 +371,132 @@ function split100(parts) {
   raw.map((v, i) => [v - base[i], i]).sort((a, b) => b[0] - a[0]).forEach(([, i]) => { if (rest-- > 0) base[i]++; });
   return base;
 }
+function channels() {
+  if (DS.sim) return SIM_ORDER;
+  const size = {}; for (const r of DS.rows) size[r.c] = (size[r.c] || 0) + r.k;
+  return Object.keys(size).sort((a, b) => size[b] - size[a]).slice(0, 8).sort();
+}
 
-/* Hero */
+/* ---------- hero ---------- */
 const waffle = $("waffle");
 for (let i = 0; i < 100; i++) waffle.appendChild(document.createElement("i"));
-const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-function drawHero(channel, stagger) {
-  const s = stats(rows(channel));
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function drawHero(stagger) {
+  const s = stats(pick(channel));
   const [full, disc, left] = split100([s.full, s.disc, 1 - s.renewal]);
   [...waffle.children].forEach((el, i) => {
-    el.style.transitionDelay = stagger && !reduce ? i * 9 + "ms" : "0ms";
+    el.style.transitionDelay = stagger && !reduceMotion ? i * 9 + "ms" : "0ms";
     el.className = i < full ? "full" : i < full + disc ? "disc" : "";
   });
   $("k-full").textContent = full; $("k-disc").textContent = disc; $("k-left").textContent = left;
-  const who = channel === "All" ? "customers" : SHORT[channel].toLowerCase() + " customers";
+  const who = channel === "All" ? "customers" : DS.sim ? name(channel).toLowerCase() + " customers" : `customers from ${name(channel)}`;
   $("headline").textContent = `${full + disc} of 100 ${who} renewed. Only ${full} paid full price.`;
   waffle.setAttribute("aria-label", `Out of 100 ${who}: ${full} renewed at full price, ${disc} renewed on a discount, ${left} did not renew.`);
 }
-const chan = $("chan");
-["All", ...CHANNELS].forEach((c) => {
-  const b = document.createElement("button");
-  b.type = "button"; b.textContent = c === "All" ? "All customers" : SHORT[c];
-  b.setAttribute("aria-pressed", c === "All");
-  b.onclick = () => { chan.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b)); drawHero(c, false); };
-  chan.appendChild(b);
-});
-requestAnimationFrame(() => drawHero("All", true));
+function drawChannelPicker() {
+  const chan = $("chan"), list = channels();
+  chan.querySelectorAll("button").forEach((b) => b.remove());
+  chan.hidden = list.length < 2 || list.length > 6;
+  if (chan.hidden) return;
+  ["All", ...list].forEach((c) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = c === "All" ? "All customers" : name(c);
+    b.setAttribute("aria-pressed", c === channel);
+    b.onclick = () => { channel = c; chan.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b)); drawHero(false); };
+    chan.appendChild(b);
+  });
+}
 
-/* Cohorts */
-const per = CHANNELS.map((c) => ({ c, ...stats(rows(c)) }));
-const maxMoney = Math.max(...per.map((p) => p.perCust));
-const cohort = $("cohort"), tip = $("tip");
-cohort.innerHTML = `<span></span><span class="hd">Share of customers who renewed</span><span class="hd">Monthly contribution per customer</span>` +
-  per.map((p) => `<span class="lab">${SHORT[p.c]}</span>
-   <div class="track" data-h="Share of customers who renewed" data-tip="${SHORT[p.c]}: ${pct(p.renewal, 1)} renewed. ${pct(p.full, 1)} at full price, ${pct(p.disc, 1)} on a discount.">
-     <span class="seg-bar full" style="width:${p.full * 78}%"></span><span class="seg-bar disc" style="width:${p.disc * 78}%"></span><span class="val">${pct(p.renewal)}</span></div>
-   <div class="track" data-h="Monthly contribution per customer" data-tip="${SHORT[p.c]}: ${usd(p.perCust, 2)} a month per customer due to renew, after discounts and cost to serve.">
-     <span class="seg-bar money" style="width:${p.perCust / maxMoney * 78}%"></span><span class="val">${usd(p.perCust, 2)}</span></div>`).join("");
+/* ---------- cohorts ---------- */
+function drawCohorts() {
+  const per = channels().map((c) => ({ c, ...stats(pick(c)) }));
+  const one = per.length < 2;
+  $("cohort-box").hidden = $("cohort-legend").hidden = $("cohort-details").hidden = one;
+  if (one) {
+    $("cohort-h").textContent = "Which customers renew, and what are they worth?";
+    $("cohort-take").textContent = "This file has no acquisition_source column, so there is one group and nothing to compare. Add that column to see which channels renew well and which ones earn.";
+    return;
+  }
+  const maxMoney = Math.max(...per.map((p) => p.perCust), 0.01);
+  $("cohort").innerHTML = `<span></span><span class="hd">Share of customers who renewed</span><span class="hd">Monthly contribution per customer</span>` +
+    per.map((p) => `<span class="lab">${esc(name(p.c))}</span>
+     <div class="track" data-h="Share of customers who renewed" data-tip="${esc(name(p.c))}: ${pct(p.renewal, 1)} renewed. ${pct(p.full, 1)} at full price, ${pct(p.disc, 1)} on a discount.">
+       <span class="seg-bar full" style="width:${p.full * 78}%"></span><span class="seg-bar disc" style="width:${p.disc * 78}%"></span><span class="val">${pct(p.renewal)}</span></div>
+     <div class="track" data-h="Monthly contribution per customer" data-tip="${esc(name(p.c))}: ${usd(p.perCust, 2)} a month per customer due to renew, after discounts and cost to serve.">
+       <span class="seg-bar money" style="width:${Math.max(0, p.perCust) / maxMoney * 78}%"></span><span class="val">${usd(p.perCust, 2)}</span></div>`).join("");
+  const best = [...per].sort((a, b) => b.renewal - a.renewal)[0], rich = [...per].sort((a, b) => b.perCust - a.perCust), top = rich[0], low = rich[rich.length - 1];
+  if (best.c === low.c) {
+    $("cohort-h").textContent = "The customers who renew most are worth the least";
+    $("cohort-take").textContent = `${name(best.c)} customers renew at ${pct(best.renewal)}, the best of the ${per.length} groups, and bring in ${usd(best.perCust, 2)} each a month. ${name(top.c)} customers bring in ${usd(top.perCust, 2)}. The renewal rate rewards the discount, and the margin pays for it.`;
+  } else if (best.c === top.c) {
+    $("cohort-h").textContent = "Here the best renewers are also worth the most";
+    $("cohort-take").textContent = `${name(best.c)} customers renew at ${pct(best.renewal)} and bring in ${usd(best.perCust, 2)} each a month, the highest on both counts. ${name(low.c)} customers bring in the least, at ${usd(low.perCust, 2)}.`;
+  } else {
+    $("cohort-h").textContent = "Renewing most and earning most are different groups";
+    $("cohort-take").textContent = `${name(best.c)} customers renew best, at ${pct(best.renewal)}. ${name(top.c)} customers are worth the most, at ${usd(top.perCust, 2)} each a month, against ${usd(best.perCust, 2)} for ${name(best.c)}.`;
+  }
+  $("cohort-table").innerHTML = `<table><thead><tr><th>Acquired through</th><th>Customers</th><th>Renewed</th><th>At full price</th><th>On a discount</th><th>Contribution per customer</th></tr></thead><tbody>` +
+    per.map((p) => `<tr><td>${esc(name(p.c))}</td><td>${num(p.n)}</td><td>${pct(p.renewal, 1)}</td><td>${pct(p.full, 1)}</td><td>${pct(p.disc, 1)}</td><td>${usd(p.perCust, 2)}</td></tr>`).join("") + `</tbody></table>`;
+}
 function hook(box, tipEl) {
   box.addEventListener("pointermove", (e) => {
     const t = e.target.closest("[data-tip]");
     if (!t) return tipEl.classList.remove("on");
     tipEl.textContent = t.dataset.tip; tipEl.style.whiteSpace = "normal"; tipEl.style.maxWidth = "19rem";
     const r = box.getBoundingClientRect();
-    tipEl.style.left = Math.min(e.clientX - r.left + 14, r.width - 300) + "px";
+    tipEl.style.left = Math.max(0, Math.min(e.clientX - r.left + 14, r.width - 300)) + "px";
     tipEl.style.top = e.clientY - r.top + 18 + "px";
     tipEl.classList.add("on");
   });
   box.addEventListener("pointerleave", () => tipEl.classList.remove("on"));
 }
-hook(cohort.parentElement, tip);
-const best = [...per].sort((a, b) => b.renewal - a.renewal)[0], richest = [...per].sort((a, b) => b.perCust - a.perCust)[0];
-$("cohort-take").textContent = `${SHORT[best.c]} customers renew at ${pct(best.renewal)}, the best of the three groups, and bring in ${usd(best.perCust, 2)} each a month. ${SHORT[richest.c]} customers bring in ${usd(richest.perCust, 2)}. The renewal rate rewards the discount, and the margin pays for it.`;
-$("cohort-table").innerHTML = `<table><thead><tr><th>Acquired through</th><th>Customers</th><th>Renewed</th><th>At full price</th><th>On a discount</th><th>Contribution per customer</th></tr></thead><tbody>` +
-  per.map((p) => `<tr><td>${SHORT[p.c]}</td><td>${p.n.toLocaleString("en-US")}</td><td>${pct(p.renewal, 1)}</td><td>${pct(p.full, 1)}</td><td>${pct(p.disc, 1)}</td><td>${usd(p.perCust, 2)}</td></tr>`).join("") + `</tbody></table>`;
+hook($("cohort-box"), $("tip"));
 
-/* Dimensions */
-const all = stats(CELLS);
-$("d-val").textContent = pct(all.engaged); $("d-eco").textContent = pct(all.fullOfRenewers); $("d-cho").textContent = pct(all.aware);
+/* ---------- three questions ---------- */
+function drawDims() {
+  const a = stats(DS.rows), nm = '<span class="nm">not measured</span>';
+  $("d-val").innerHTML = DS.measured.engagement ? pct(a.engaged) : nm;
+  $("d-eco").textContent = pct(a.fullOfRenewers);
+  $("d-cho").innerHTML = a.aware === null ? nm : pct(a.aware);
+  $("c-val").textContent = DS.measured.engagement ? "of customers actively use the product" : "add an engagement column to see this";
+  $("c-cho").textContent = a.aware === null ? "add a survey_aware_of_renewal column to see this" : "say they knew the renewal was coming";
+}
 
-/* Sensitivity */
-const svg = $("sens-svg"), W = 640, H = 340, M = { l: 58, r: 22, t: 16, b: 44 };
+/* ---------- sensitivity ---------- */
+const svg = $("sens-svg"), W = 640, H = 340, M = { l: 64, r: 22, t: 16, b: 44 };
 const X = (v) => M.l + (v / 100) * (W - M.l - M.r);
-let curve = [], Y = () => 0;
+let curve = [], observed = 0;
+function niceStep(span) { const raw = span / 4, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10) * p; }
+const axis = (v) => Math.abs(v) >= 10000 ? "$" + (v / 1000).toLocaleString("en-US") + "k" : usd(v);
 function drawSens() {
-  const red = +$("red").value, loss = +$("loss").value;
+  const red = +$("red").value, loss = +$("loss").value, rows = DS.rows;
   $("red-o").textContent = red + "%";
   $("loss-o").textContent = `${loss} ${loss === 1 ? "point" : "points"} per 10% cut`;
-  curve = []; for (let r = 0; r <= 100; r += 5) curve.push([r, scenario(CELLS, r, loss / 100)]);
-  const obs = all.contrib, now = scenario(CELLS, red, loss / 100), delta = now - obs;
+  $("sens-sub").textContent = `Monthly contribution from these ${num(stats(rows).n)} customers, by size of discount cut`;
+  curve = []; for (let r = 0; r <= 100; r += 5) curve.push([r, scenario(rows, r, loss / 100)]);
+  observed = stats(rows).contrib;
+  const obs = observed, now = scenario(rows, red, loss / 100), delta = now - obs;
   const vals = curve.map((p) => p[1]).concat(obs);
-  let lo = Math.min(...vals), hi = Math.max(...vals); const pad = Math.max((hi - lo) * 0.12, 4000); lo -= pad; hi += pad;
-  Y = (v) => M.t + (1 - (v - lo) / (hi - lo)) * (H - M.t - M.b);
-  const step = (hi - lo) > 120000 ? 50000 : (hi - lo) > 50000 ? 20000 : 10000;
+  let lo = Math.min(...vals), hi = Math.max(...vals); const pad = Math.max((hi - lo) * 0.14, Math.abs(obs) * 0.02, 1); lo -= pad; hi += pad;
+  const Y = (v) => M.t + (1 - (v - lo) / (hi - lo)) * (H - M.t - M.b), step = niceStep(hi - lo);
   let g = "";
-  for (let t = Math.ceil(lo / step) * step; t <= hi; t += step) g += `<line x1="${M.l}" x2="${W - M.r}" y1="${Y(t)}" y2="${Y(t)}" stroke="#22345C"/><text x="${M.l - 8}" y="${Y(t) + 5}" text-anchor="end">$${t / 1000}k</text>`;
+  for (let t = Math.ceil(lo / step) * step; t <= hi; t += step) g += `<line x1="${M.l}" x2="${W - M.r}" y1="${Y(t)}" y2="${Y(t)}" stroke="#22345C"/><text x="${M.l - 8}" y="${Y(t) + 5}" text-anchor="end">${axis(t)}</text>`;
   for (const t of [0, 25, 50, 75, 100]) g += `<text x="${X(t)}" y="${H - 16}" text-anchor="middle">${t}%</text>`;
   g += `<line x1="${M.l}" x2="${W - M.r}" y1="${Y(obs)}" y2="${Y(obs)}" stroke="#A8B4CE" stroke-width="1.5" stroke-dasharray="5 5"/><text x="${W - M.r}" y="${Y(obs) + (delta >= 0 ? 18 : -8)}" text-anchor="end" style="fill:#C9D3EA">Today: ${usd(obs)}</text>`;
   g += `<path d="${curve.map((p, i) => (i ? "L" : "M") + X(p[0]) + " " + Y(p[1])).join(" ")}" fill="none" stroke="#C4961F" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
   g += `<line id="cross" x1="0" x2="0" y1="${M.t}" y2="${H - M.b}" stroke="#A8B4CE" stroke-width="1" visibility="hidden"/>`;
   g += `<circle cx="${X(red)}" cy="${Y(now)}" r="7" fill="#C4961F" stroke="#0B1A38" stroke-width="2"/>`;
   svg.innerHTML = g;
-  let be = null; if (red > 0) for (let e = 0; e <= 15.001; e += 0.1) { if (scenario(CELLS, red, e / 100) < obs) { be = e; break; } }
-  const verb = delta >= 0 ? "adds" : "costs";
+  let be = null; if (red > 0) for (let e = 0; e <= 15.001; e += 0.1) { if (scenario(rows, red, e / 100) < obs) { be = e; break; } }
   $("result").innerHTML = red === 0 ? `<strong>${usd(obs)}</strong>is what these customers contribute a month today. Move the first slider to test a cut.` :
-    `<strong>${delta >= 0 ? "+" : ""}${usd(delta)} a month</strong>Cutting discounts by ${red}% ${verb} ${usd(Math.abs(delta))} a month under this assumption. ` +
-    (be === null ? "It keeps paying across the whole range of the second slider." : `It stops paying once renewals fall by about ${be.toFixed(1)} points per 10% cut.`);
+    `<strong>${delta >= 0 ? "+" : ""}${usd(delta)} a month</strong>Cutting discounts by ${red}% ${delta >= 0 ? "adds" : "costs"} ${usd(Math.abs(delta))} a month under this assumption. ` +
+    (be === null ? "It keeps paying across the whole range of the second slider." : be < 0.05 ? "On these numbers it does not pay even if no customer leaves." : `It stops paying once renewals fall by about ${be.toFixed(1)} points per 10% cut.`);
 }
-$("red").oninput = drawSens; $("loss").oninput = drawSens; drawSens();
+$("red").oninput = drawSens; $("loss").oninput = drawSens;
 const box2 = $("sens-box"), tip2 = $("tip2");
 svg.addEventListener("pointermove", (e) => {
   const r = svg.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W;
-  const i = Math.max(0, Math.min(20, Math.round((x - M.l) / (W - M.l - M.r) * 20))), p = curve[i], d = p[1] - all.contrib;
+  const i = Math.max(0, Math.min(20, Math.round((x - M.l) / (W - M.l - M.r) * 20))), p = curve[i], d = p[1] - observed;
   const c = svg.querySelector("#cross"); c.setAttribute("x1", X(p[0])); c.setAttribute("x2", X(p[0])); c.setAttribute("visibility", "visible");
   tip2.textContent = `${p[0]}% cut: ${usd(p[1])} a month (${d >= 0 ? "+" : ""}${usd(d)})`;
   const br = box2.getBoundingClientRect();
@@ -356,6 +504,32 @@ svg.addEventListener("pointermove", (e) => {
   tip2.classList.add("on");
 });
 svg.addEventListener("pointerleave", () => { tip2.classList.remove("on"); const c = svg.querySelector("#cross"); if (c) c.setAttribute("visibility", "hidden"); });
+
+/* ---------- status and upload ---------- */
+function drawStatus() {
+  const st = $("status"), n = stats(DS.rows).n;
+  $("hero-note").textContent = DS.sim ? `Simulated data for ${num(n)} subscribers. The figures illustrate the method and describe no real business.`
+    : `Your data: ${num(n)} customers. These describe this group of customers and are no proof of cause.`;
+  st.hidden = DS.sim; if (DS.sim) return;
+  st.innerHTML = `<strong>Showing your data: ${num(n)} customers from ${esc(DS.file)}</strong><button type="button" id="back">Back to simulated data</button>` +
+    (DS.notes.length ? `<details><summary>${DS.notes.length} ${DS.notes.length === 1 ? "assumption" : "assumptions"} made about your file</summary><ul>${DS.notes.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details>` : "") +
+    (DS.measured.engagement && DS.labels.length <= 12 ? `<div class="eng">Engagement labels that count as active: ${DS.labels.map((l) => `<label><input type="checkbox" value="${esc(l)}" ${DS.engaged.has(l) ? "checked" : ""}> ${esc(l)}</label>`).join("")}</div>` : "");
+  $("back").onclick = () => { DS = simulated(); $("file").value = ""; $("price").value = 30; $("cost").value = 6; drawAll(false); };
+  st.querySelectorAll(".eng input").forEach((cb) => cb.onchange = () => { cb.checked ? DS.engaged.add(cb.value) : DS.engaged.delete(cb.value); drawDims(); });
+}
+function drawAll(stagger) { channel = "All"; drawStatus(); drawChannelPicker(); drawHero(stagger); drawCohorts(); drawDims(); drawSens(); }
+let lastText = null, lastName = null;
+function load() {
+  const err = $("err"); err.hidden = true;
+  try {
+    DS = prepare(lastText, Math.max(0, +$("price").value || 0), Math.max(0, +$("cost").value || 0), lastName);
+    drawAll(false); window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+  } catch (e) { err.textContent = "Could not read this file. " + e.message; err.hidden = false; }
+}
+$("file").onchange = (e) => { const f = e.target.files[0]; if (!f) return; lastName = f.name; f.text().then((t) => { lastText = t; load(); }); };
+$("price").onchange = $("cost").onchange = () => { if (lastText && !DS.sim) { const y = scrollY; load(); scrollTo(0, y); } };
+$("tpl").href = URL.createObjectURL(new Blob([TEMPLATE], { type: "text/csv" }));
+requestAnimationFrame(() => drawAll(true));
 </script>
 </body>
 </html>
