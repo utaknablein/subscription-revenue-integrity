@@ -7,36 +7,45 @@
 <meta name="description" content="Are we building customer loyalty or merely recording renewals? An interactive prototype on simulated data by Uta Knablein.">
 <meta property="og:title" content="Subscription Revenue Integrity">
 <meta property="og:description" content="82 of 100 customers renewed. Only 33 paid full price. An interactive prototype on simulated data.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://utaknablein.github.io/subscription-revenue-integrity/">
+<meta property="og:image" content="https://utaknablein.github.io/subscription-revenue-integrity/thumbnail.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="82 of 100 customers renewed. Only 33 paid full price.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://utaknablein.github.io/subscription-revenue-integrity/thumbnail.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B1A38'/%3E%3Crect x='6' y='6' width='9' height='9' rx='2' fill='%23C4961F'/%3E%3Crect x='17' y='6' width='9' height='9' rx='2' fill='%23C4961F'/%3E%3Crect x='6' y='17' width='9' height='9' rx='2' fill='%234A8AE6'/%3E%3Crect x='17.75' y='17.75' width='7.5' height='7.5' rx='1.5' fill='none' stroke='%236F80A6' stroke-width='1.5'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Century+Gothic:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
   color-scheme: dark;
   --bg:#0B1A38; --panel:#13264C; --ink:#F4F0E6; --muted:#A8B4CE; --rule:#2B3D68;
   --gold:#C4961F; --full:#C4961F; --disc:#4A8AE6; --bar:#C9D3EA;
-  --display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
-  --body:"Source Sans 3","Segoe UI",system-ui,-apple-system,sans-serif;
+  --display:"Century Gothic","CenturyGothic","Avenir Next","Segoe UI",sans-serif;
+  --body:"Century Gothic","CenturyGothic","Avenir Next","Segoe UI",sans-serif;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:1.125rem;line-height:1.55;font-variant-numeric:tabular-nums}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:1.03rem;line-height:1.6;font-variant-numeric:tabular-nums}
 a{color:inherit;text-underline-offset:.18em}
 a:hover{color:#E3B94A}
 :focus-visible{outline:3px solid var(--full);outline-offset:3px;border-radius:4px}
 .wrap{max-width:68rem;margin:0 auto;padding:0 1.5rem}
 header.top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:1.5rem 0 0;font-size:1rem}
-header.top .name{font-family:var(--display);font-weight:600}
+header.top .name{font-family:var(--display);font-weight:700}
 header.top nav a{margin-left:1.25rem}
 
 .hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:3.5rem;align-items:center;padding:4.5rem 0 4rem}
-h1{font-family:var(--display);font-weight:700;font-size:clamp(2.5rem,6.2vw,4.75rem);line-height:1.02;letter-spacing:-.025em;margin:0 0 1.5rem;text-wrap:balance}
-.lede{font-size:1.3rem;line-height:1.45;max-width:32rem;margin:0 0 2rem}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(2.2rem,5.2vw,4rem);line-height:1.08;letter-spacing:-.02em;margin:0 0 1.5rem;text-wrap:balance}
+.lede{font-size:1.18rem;line-height:1.45;max-width:32rem;margin:0 0 2rem}
 .seg{display:inline-flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .9rem;padding:0;border:0}
 .seg legend{padding:0;margin-bottom:.5rem;color:var(--muted);font-size:1rem}
 .seg button{font:inherit;font-size:1rem;color:var(--ink);background:transparent;border:1.5px solid var(--rule);border-radius:999px;padding:.35rem .95rem;cursor:pointer}
 .seg button:hover{border-color:var(--ink)}
-.seg button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#0B1A38;font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#0B1A38;font-weight:700}
 .note{color:var(--muted);font-size:.95rem;max-width:32rem;margin:0}
 
 .waffle{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;max-width:25rem}
@@ -50,19 +59,19 @@ h1{font-family:var(--display);font-weight:700;font-size:clamp(2.5rem,6.2vw,4.75r
 .key b{font-family:var(--display);font-size:1.5rem;font-weight:700;text-align:right;line-height:1}
 
 section.block{border-top:1.5px solid var(--gold);padding:3.25rem 0 3.75rem}
-h2{font-family:var(--display);font-weight:650;font-size:clamp(1.6rem,3vw,2.15rem);line-height:1.12;letter-spacing:-.015em;margin:0 0 .75rem;max-width:38rem;text-wrap:balance}
-.take{font-size:1.25rem;max-width:40rem;margin:0 0 2rem}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(1.6rem,3vw,2.15rem);line-height:1.12;letter-spacing:-.015em;margin:0 0 .75rem;max-width:38rem;text-wrap:balance}
+.take{font-size:1.12rem;max-width:40rem;margin:0 0 2rem}
 .sub{color:var(--muted);font-size:1rem;margin:0 0 .6rem}
 
 .cohort{display:grid;grid-template-columns:11rem minmax(0,1fr) minmax(0,1fr);column-gap:2rem;row-gap:.9rem;align-items:center}
 .cohort .hd{color:var(--muted);font-size:1rem;align-self:end;padding-bottom:.2rem}
-.cohort .lab{font-weight:600}
+.cohort .lab{font-weight:700}
 .track{position:relative;height:1.75rem;display:flex;align-items:center;gap:2px}
 .track .seg-bar{height:100%;min-width:2px}
 .track .seg-bar.full{background:var(--full);border-radius:0}
 .track .seg-bar.disc{background:var(--disc);border-radius:0 4px 4px 0}
 .track .seg-bar.money{background:var(--bar);border-radius:0 4px 4px 0}
-.track .val{margin-left:.55rem;font-weight:600;white-space:nowrap}
+.track .val{margin-left:.55rem;font-weight:700;white-space:nowrap}
 .legend{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;font-size:1rem;color:var(--muted);margin:1.5rem 0 0}
 .legend span{display:inline-flex;align-items:center;gap:.45rem}
 .legend i{width:.85rem;height:.85rem;border-radius:2px;display:inline-block}
@@ -71,7 +80,7 @@ summary{cursor:pointer;color:var(--muted);width:fit-content}
 table{border-collapse:collapse;margin-top:.75rem;font-size:1rem}
 th,td{text-align:right;padding:.35rem .9rem;border-bottom:1px solid var(--rule)}
 th:first-child,td:first-child{text-align:left;padding-left:0}
-th{font-weight:600}
+th{font-weight:700}
 
 .sens{display:grid;grid-template-columns:minmax(0,19rem) minmax(0,1fr);gap:3rem;align-items:start}
 .ctl{margin-bottom:1.6rem}
@@ -87,7 +96,7 @@ svg text{font-family:var(--body);font-size:14px;fill:var(--muted)}
 .tip.on{opacity:1}
 
 .dims{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2.5rem}
-.dims h3{font-family:var(--display);font-size:1.25rem;font-weight:650;margin:0 0 .35rem}
+.dims h3{font-family:var(--display);font-size:1.25rem;font-weight:700;margin:0 0 .35rem}
 .dims p{margin:0 0 .9rem;font-size:1.05rem}
 .dims .fig{font-family:var(--display);font-weight:700;font-size:2.4rem;line-height:1;display:block}
 .dims .cap{color:var(--muted);font-size:1rem}
@@ -99,7 +108,7 @@ ol.value b{display:block;font-size:1.08rem;margin-bottom:.3rem}
 
 .close{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:3rem}
 .close p{margin:0 0 1rem;max-width:30rem}
-.btn{display:inline-block;background:var(--gold);color:#0B1A38;text-decoration:none;border-radius:999px;padding:.6rem 1.3rem;font-weight:600}
+.btn{display:inline-block;background:var(--gold);color:#0B1A38;text-decoration:none;border-radius:999px;padding:.6rem 1.3rem;font-weight:700}
 .btn:hover{background:var(--ink);color:#0B1A38}
 footer{border-top:1px solid var(--rule);padding:1.5rem 0 3rem;color:var(--muted);font-size:.95rem}
 
